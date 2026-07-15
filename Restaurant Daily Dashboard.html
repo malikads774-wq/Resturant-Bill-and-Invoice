@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<!-- saved from url=(0022)http://127.0.0.1:5500/ -->
+<html lang="en"><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/content/location/location.js" id="eppiocemhmnlbhjplcgkofciiegomcon"></script><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/extend-native-history-api.js"></script><script src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/libs/requests.js"></script><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Restaurant Daily Dashboard</title>
+    <link rel="stylesheet" href="./Restaurant Daily Dashboard_files/style.css">
+    <!-- PDF Libraries -->
+    <script src="./Restaurant Daily Dashboard_files/html2canvas.min.js.download"></script><script bis_use="true" type="text/javascript" charset="utf-8" nonce="" data-dynamic-id="22450716-2d39-4c88-9000-a1e67932f2d3" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/200.js"></script><script bis_use="true" type="text/javascript" charset="utf-8" nonce="" data-dynamic-id="22450716-2d39-4c88-9000-a1e67932f2d3" src="chrome-extension://eppiocemhmnlbhjplcgkofciiegomcon/executors/101.js"></script>
+    <script src="./Restaurant Daily Dashboard_files/jspdf.umd.min.js.download"></script>
+</head>
+<body bis_register="W3sibWFzdGVyIjp0cnVlLCJleHRlbnNpb25JZCI6ImVwcGlvY2VtaG1ubGJoanBsY2drb2ZjaWllZ29tY29uIiwiYWRibG9ja2VyU3RhdHVzIjp7IkRJU1BMQVkiOiJlbmFibGVkIiwiRkFDRUJPT0siOiJlbmFibGVkIiwiVFdJVFRFUiI6ImVuYWJsZWQiLCJSRURESVQiOiJlbmFibGVkIiwiUElOVEVSRVNUIjoiZW5hYmxlZCIsIklOU1RBR1JBTSI6ImVuYWJsZWQiLCJUSUtUT0siOiJkaXNhYmxlZCIsIkxJTktFRElOIjoiZW5hYmxlZCIsIkNPTkZJRyI6ImRpc2FibGVkIn0sInZlcnNpb24iOiIyLjEuMiIsInNjb3JlIjoyMDEwMjB9XQ==" __processed_67438139-7d89-487c-a446-fa715ce9baef__="true">
+
+<div class="app" bis_skin_checked="1">
+    <!-- SIDEBAR NAVIGATION -->
+    <aside class="sidebar">
+        <h1 class="brand">🌿 RestoDash</h1>
+        <nav>
+            <button data-section="dailyStatement" class="">Daily Statement</button>
+            <button data-section="salesEntry" class="">Enter Sales</button>
+            <button data-section="inventory" class="active">Kitchen Inventory</button>
+            <button data-section="dealer" class="">Dealer Payments</button>
+        </nav>
+        <div class="sidebar-footer" bis_skin_checked="1">
+            <button id="downloadStatementBtn">Download Statement PDF</button>
+            <button id="clearDataBtn" class="danger">Clear All Data</button>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="main">
+        <header class="topbar">
+            <h2>Daily Operations Dashboard</h2>
+            <div id="liveClock" bis_skin_checked="1">19:28:48</div>
+        </header>
+
+        <!-- SECTION: DAILY STATEMENT -->
+        <section id="dailyStatement" class="section">
+            <h2>Daily Statement for <span id="statementDate">15/07/2026</span></h2>
+            <div class="statement-grid" bis_skin_checked="1">
+                <div class="statement-card success" bis_skin_checked="1">
+                    <h3>Total Sales</h3>
+                    <p id="summarySales">Rs. 0</p>
+                </div>
+                <div class="statement-card danger" bis_skin_checked="1">
+                    <h3>Dealer Payments</h3>
+                    <p id="summaryDealer">Rs. 0</p>
+                </div>
+                <div class="statement-card highlight" bis_skin_checked="1">
+                    <h3>Net Cash</h3>
+                    <p id="summaryNet">Rs. 0</p>
+                </div>
+            </div>
+            <h3>Inventory Usage Summary</h3>
+            <div id="summaryInventory" class="inventory-summary" bis_skin_checked="1"><p>No inventory data for today.</p></div>
+        </section>
+
+        <!-- SECTION: SALES ENTRY -->
+        <section id="salesEntry" class="section">
+            <h2>Enter Today's Sales &amp; Bills</h2>
+            <div class="form-row" bis_skin_checked="1">
+                <input type="text" id="itemName" placeholder="Item Name">
+                <input type="number" id="itemQty" placeholder="Quantity">
+                <input type="number" id="itemPrice" placeholder="Price">
+                <button id="addItemBtn">Add to Bill</button>
+            </div>
+            <h4>Current Bill</h4>
+            <table id="billTable"></table>
+            <div class="bill-total" bis_skin_checked="1">Total: Rs. <span id="billTotal">0</span></div>
+            <button id="saveBillBtn">Save Bill &amp; Add to Sales</button>
+            <button id="downloadBillBtn">Download Bill PDF</button>
+        </section>
+
+        <!-- SECTION: KITCHEN INVENTORY -->
+        <section id="inventory" class="section active">
+            <h2>Daily Kitchen Inventory Entry</h2>
+            <div class="form-row inventory-form" bis_skin_checked="1">
+                <input type="text" id="invItemName" placeholder="e.g., Chicken, Oil">
+                <input type="number" id="invOpening" placeholder="Opening Stock (kg/ltr)">
+                <input type="number" id="invPurchased" placeholder="Purchased Today">
+                <input type="number" id="invWastage" placeholder="Wastage">
+                <button id="addInventoryBtn">Add Inventory Item</button>
+            </div>
+            <h3>Today's Inventory List</h3>
+            <div id="inventoryList" bis_skin_checked="1"></div>
+        </section>
+
+        <!-- SECTION: DEALER PAYMENTS -->
+        <section id="dealer" class="section">
+            <h2>Dealer &amp; Expense Payments</h2>
+            <div class="form-row" bis_skin_checked="1">
+                <input type="text" id="dealerName" placeholder="Dealer/Expense Name">
+                <input type="number" id="dealerAmount" placeholder="Amount Paid">
+                <button id="addDealerBtn">Record Payment</button>
+            </div>
+            <h3>Today's Payments</h3>
+            <div id="dealerList" bis_skin_checked="1"></div>
+        </section>
+    </main>
+</div>
+
+<!-- HIDDEN PDF TEMPLATES -->
+<div class="pdf-templates" bis_skin_checked="1">
+    <!-- Daily Statement PDF Template -->
+    <div id="statementPdfTemplate" bis_skin_checked="1">
+        <div class="pdf-header" bis_skin_checked="1">
+            <h1>Daily Business Statement</h1>
+            <p>Date: <span id="pdfStatementDate"></span></p>
+        </div>
+        <div class="pdf-section" bis_skin_checked="1">
+            <h2>Financial Summary</h2>
+            <div class="pdf-item" bis_skin_checked="1"><span>Total Sales:</span><span id="pdfSales"></span></div>
+            <div class="pdf-item" bis_skin_checked="1"><span>Dealer Payments:</span><span id="pdfDealer"></span></div>
+            <div class="pdf-item total" bis_skin_checked="1"><span>Net Cash Position:</span><span id="pdfNet"></span></div>
+        </div>
+        <div class="pdf-section" bis_skin_checked="1">
+            <h2>Inventory Usage</h2>
+            <div id="pdfInventory" bis_skin_checked="1"></div>
+        </div>
+        <div class="pdf-footer" bis_skin_checked="1">Generated by RestoDash</div>
+    </div>
+
+    <!-- Bill PDF Template -->
+    <div id="billPdfTemplate" bis_skin_checked="1">
+        <!-- This will be populated by JS -->
+    </div>
+</div>
+
+<script src="./Restaurant Daily Dashboard_files/app.js.download"></script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
+
+</body></html>
